@@ -4,13 +4,98 @@ models:
   - name: stg_orders
     description: This model cleans up order data
     columns:
-      - name: orders_key
+      - name: order_id
         description: Primary key, surrogate generated from source key
         tests:
           - unique
           - not_null
-      - name: order_id
+      - name: source_order_id
         description: Source's primary key
         tests:
           - unique
-          - not null
+          - not_null
+      - name: source_customer_id
+        description: Source's foreign key for customers
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers')
+              field: source_customer_id
+      - name: source_inventory_id
+        description: Source's foreign key for sellable inventory item
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_inventory_items')
+              field: source_inventory_parent_id
+      - name: status
+        description: The status of the order
+        tests:
+          - accepted_values:
+              values: ['quoted', 'completed']
+  
+  - name: stg_customers
+    description: This model cleans up customers data
+    columns:
+      - name: customer_id
+        description: Primary key, surrogate generated from source key
+        tests:
+          - unique
+          - not_null
+      - name: source_customer_id
+        description: Source's primary key
+        tests:
+          - unique
+          - not_null
+      - name: source_country_id
+        description: Source's foreign key for countries
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_countries')
+              field: source_country_id
+      - name: name
+        description: The customer's common name
+  
+  - name: stg_countries
+    description: This model cleans up countries data
+    columns:
+      - name: country_id
+        description: Primary key, surrogate generated from source key
+        tests:
+          - unique
+          - not_null
+      - name: source_country_id
+        description: Source's primary key
+        tests:
+          - unique
+          - not_null
+      - name: name
+        description: The country's name
+      - name: iso_code
+        description: The two-character ISO code of the country
+  
+  - name: stg_inventory_items
+    description: This model cleans up inventory data, links items to raw items, and assigns a sales fraction if needed
+    columns:
+      - name: inventory_item_id
+        description: Primary key, surrogate generated from source sellable item and child raw item keys
+        tests:
+          - unique
+          - not_null
+      - name: source_inventory_parent_id
+        description: Source's primary key for the sellable inventory item
+        tests:
+          - not_null
+      - name: source_inventory_child_id
+        description: Source's primary key for the raw item component inventory item
+      - name: inventory_parent_code
+        description: The sellable inventory item's product code
+        tests:
+          - not_null
+      - name: inventory_child_code
+        description: The raw item component inventory item's product code
+      - name: sales_fraction
+        description: The weight of the raw item's value towards the bundled sellable inventory item
+        tests:
+          - not_null
