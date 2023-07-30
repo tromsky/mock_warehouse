@@ -1,8 +1,15 @@
-with final as (
-
-    select customer_id, source_customer_id, name
-    from {{ ref('stg_customers') }}
-
+WITH FINAL AS (
+    SELECT
+        customer_id,
+        source_customer_id,
+        customer_name,
+        source_customer_country_id,
+        customer_country_name,
+        customer_country_iso_code
+    FROM
+        {{ ref('stg_customers') }}
 )
-
-select * from final
+SELECT
+    *
+FROM
+    FINAL

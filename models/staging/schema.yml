@@ -51,29 +51,8 @@ models:
         description: Source's foreign key for countries
         tests:
           - not_null
-          - relationships:
-              to: ref('stg_countries')
-              field: source_country_id
       - name: name
         description: The customer's common name
-  
-  - name: stg_countries
-    description: This model cleans up countries data
-    columns:
-      - name: country_id
-        description: Primary key, surrogate generated from source key
-        tests:
-          - unique
-          - not_null
-      - name: source_country_id
-        description: Source's primary key
-        tests:
-          - unique
-          - not_null
-      - name: name
-        description: The country's name
-      - name: iso_code
-        description: The two-character ISO code of the country
   
   - name: stg_inventory_items
     description: This model cleans up inventory data, links items to raw items, and assigns a sales fraction if needed

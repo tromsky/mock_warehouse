@@ -1,44 +1,57 @@
-with customers as (
-
-    select customer_id, source_customer_id, source_country_id
-    from {{ ref('stg_customers') }}
-
-),
-countries as (
-
-    select country_id, source_country_id
-    from {{ ref('stg_countries') }}
-
-),
-orders as (
-
-    select order_id, source_customer_id, source_inventory_id, source_order_id
-    from {{ ref('stg_orders') }}
-
-),
-inventory_items as (
-
-    select inventory_item_id, distributed_price, source_inventory_parent_id, source_order_id
-    from {{ ref('stg_inventory_item_orders') }}
-
-),
-final as (
-
-    select
+WITH customers AS (
+    SELECT
         customer_id,
-        country_id,
+        source_customer_id
+    FROM
+        {{ ref('stg_customers') }}
+),
+orders AS (
+    SELECT
         order_id,
+        source_customer_id,
+        source_inventory_id,
+        source_order_id,
+        price,
+        order_date
+    FROM
+        {{ ref('stg_orders') }}
+),
+inventory_items AS (
+    SELECT
         inventory_item_id,
-        distributed_price as price
-    from customers
-    join countries
-        on customers.source_country_id = countries.source_country_id
-    join orders
-        on customers.source_customer_id = orders.source_customer_id
-    join inventory_items
-        on orders.source_inventory_id = inventory_items.source_inventory_parent_id
-        and orders.source_order_id = inventory_items.source_order_id
-
+        component_inventory_item_id,
+        source_component_inventory_item_id,
+        sellable_inventory_item_id,
+        source_sellable_inventory_item_id,
+        component_inventory_item_code,
+        sales_fraction
+    FROM
+        {{ ref('stg_component_inventory_items') }}
+),
+dates AS (
+    SELECT
+        date_id,
+        full_date
+    FROM
+        {{ ref('stg_dates') }}
+),
+FINAL AS (
+    SELECT
+        customer_id,
+        order_id AS order_id_dd,
+        inventory_item_id,
+        date_id,
+        price * sales_fraction AS price
+    FROM
+        customers
+        JOIN orders
+        ON customers.source_customer_id = orders.source_customer_id
+        JOIN inventory_items
+        ON orders.source_inventory_id = inventory_items.source_sellable_inventory_item_id
+        JOIN dates
+        ON dates.full_date = orders.order_date
 )
-
-select * from final
+SELECT
+    *
+FROM
+    FINAL

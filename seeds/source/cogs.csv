@@ -1,0 +1,6 @@
+id,inventory_id,actual_cost,operation_service_id,vendor_id
+1,1,13,1,1
+2,1,14,2,2
+3,2,40,3,3
+4,3,20,4,4
+5,5,80,5,4
