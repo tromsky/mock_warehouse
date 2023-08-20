@@ -44,3 +44,8 @@ seeds:
   mock_warehouse:
     source:
       +schema: source
+      cogs:
+        +column_types:
+          modified_date: datetime
+          actual_cost: numeric
+
