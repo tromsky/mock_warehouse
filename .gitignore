@@ -2,3 +2,9 @@
 target/
 dbt_packages/
 logs/
+
+# editor and ide
+ .vscode/
+
+# python and venv
+.venv/
