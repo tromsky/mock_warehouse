@@ -4,7 +4,7 @@ dbt_packages/
 logs/
 
 # editor and ide
- .vscode/
+.vscode/
 
 # python and venv
 .venv/
