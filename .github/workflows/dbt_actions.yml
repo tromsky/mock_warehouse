@@ -12,7 +12,7 @@ on:
       - main
 
 env:
-  DBT_PROFILES_DIR: ./
+  DBT_PROFILES_DIR: ./dbt_gh_profiles
   DBT_BIGQUERY_PROJECT: ${{ secrets.DBT_BIGQUERY_PROJECT }}
   DBT_BIGQUERY_DATASET: ${{ secrets.DBT_BIGQUERY_DATASET }}
   DBT_BIGQUERY_KEYFILE: ./.gcloud/dbt-service-account.json
