@@ -51,7 +51,7 @@ models:
         description: Source's foreign key for countries
         tests:
           - not_null
-      - name: customer_name_bleh
+      - name: customer_name
         description: The customer's common name
   
   - name: stg_inventory_items
