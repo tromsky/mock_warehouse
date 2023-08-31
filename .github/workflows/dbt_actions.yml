@@ -1,37 +1,38 @@
 name: dbt_actions
 
 on:
-    push:
-        branches:
-            # run on push to development branch
-            - development
-            - main
-    pull_request:
-        branches:
-            - development
-            - main
+  push:
+    branches:
+    # run on push to development branch
+      - development
+      - main
+  pull_request:
+    branches:
+      - development
+      - main
+
 env:
-    DBT_PROFILES_DIR: ./
-    DBT_BIGQUERY_PROJECT: ${{ secrets.DBT_BIGQUERY_PROJECT }}
-    DBT_BIGQUERY_DATASET: ${{ secrets.DBT_BIGQUERY_DATASET }}
-    DBT_BIGQUERY_KEYFILE: ./.gcloud/dbt-service-account.json
+  DBT_PROFILES_DIR: ./
+  DBT_BIGQUERY_PROJECT: ${{ secrets.DBT_BIGQUERY_PROJECT }}
+  DBT_BIGQUERY_DATASET: ${{ secrets.DBT_BIGQUERY_DATASET }}
+  DBT_BIGQUERY_KEYFILE: ./.gcloud/dbt-service-account.json
 
 jobs:
-    dbt_actions:
-        name: dbt_actions
-        runs-on: ubuntu-latest
+  dbt_actions:
+    name: dbt_actions
+    runs-on: ubuntu-latest
 
-        steps:
-            - uses: actions/checkout@master
-            - uses: actions/setup-python@v1
-                with:
-                    python-version: "3.7.x"
-            - run: |
-                pip3 install dbt-bigquery
-                dbt deps
-            - run: dbt --version
-            - run: 'echo "$KEYFILE" > ./.gcloud/dbt-service-account.json'
-                shell: bash
-                env:
-                KEYFILE: ${{secrets.DBT_BIGQUERY_KEYFILE}}
-            - run: dbt test
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.7.x'
+      - run: |
+        pip3 install dbt-bigquery
+        dbt deps
+      - run: dbt --version
+      - run: 'echo "$KEYFILE" > ./.gcloud/dbt-service-account.json'
+        shell: bash
+        env:
+          KEYFILE: ${{secrets.DBT_BIGQUERY_KEYFILE}}
+      - run: dbt test
