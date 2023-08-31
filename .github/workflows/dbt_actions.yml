@@ -28,7 +28,7 @@ jobs:
         with:
           python-version: '3.7.x'
       - run: |
-        pip3 install dbt-bigquery
+        pip install dbt-bigquery
         dbt deps
       - run: dbt --version
       - run: 'echo "$KEYFILE" > ./.gcloud/dbt-service-account.json'
