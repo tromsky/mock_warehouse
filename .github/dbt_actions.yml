@@ -1,0 +1,53 @@
+name: dbt_actions
+
+on:
+    push:
+        branches:
+            # run on push to development branch
+            - development
+            - main
+    pull_request:
+        branches:
+            - development
+            - main
+env:
+    DBT_PROFILES_DIR: ./
+    DBT_BIGQUERY_PROJECT: ${{ secrets.DBT_BIGQUERY_PROJECT }}
+    DBT_BIGQUERY_DATASET: ${{ secrets.DBT_BIGQUERY_DATASET }}
+    DBT_BIGQUERY_KEYFILE: ./.gcloud/dbt-service-account.json
+
+{# DBT_BIGQUERY_USERNAME: ${{ secrets.DBT_BIGQUERY_USERNAME }} #}
+{# DBT_BIGQUERY_PASSWORD: ${{ secrets.DBT_BIGQUERY_PASSWORD }} #}
+{# DBT_SNOWFLAKE_ROLE: ${{ secrets.DBT_SNOWFLAKE_ROLE }} #}
+
+
+jobs:
+    dbt_actions:
+        name: dbt_actions
+        runs-on: ubuntu-latest
+
+        steps:
+        - name: Check out
+            uses: actions/checkout@master
+
+        - uses: actions/setup-python@v1
+            with:
+            python-version: "3.11.x"
+
+        - name: Install dependencies
+            run: |
+            pip install dbt-bigquery
+            dbt deps
+
+        - name: Create Big Query keyfile
+            run: 'scho $KEYFILE > ./.gcloud/dbt-service-account.json'
+            shell: bash
+            env:
+                KEYFILE: ${{ secrets.DBT_BIGQUERY_KEYFILE }}
+
+        # dbt related commands here - run use --target prod/dev to run for specific environments
+        {# - name: Run dbt models
+            run: dbt run #}
+
+        - name: Test dbt models
+            run: dbt test
