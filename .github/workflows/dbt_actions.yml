@@ -1,15 +1,9 @@
 name: dbt_actions
 
 on:
-  push:
-    branches:
-    # run on push to development branch
-      - development
-      - main
   pull_request:
     branches:
       - development
-      - main
 
 env:
   DBT_PROFILES_DIR: ./dbt_gh_profiles
