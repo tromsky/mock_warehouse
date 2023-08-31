@@ -3,7 +3,6 @@ name: dbt_actions
 on:
   pull_request:
     branches:
-      - development
       - main
 
 env:
