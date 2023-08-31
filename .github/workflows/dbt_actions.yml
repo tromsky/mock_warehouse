@@ -22,27 +22,16 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-        - name: Check out
-            uses: actions/checkout@master
-
-        - uses: actions/setup-python@v1
-            with:
-            python-version: "3.11.x"
-
-        - name: Install dependencies
-            run: |
-            pip install dbt-bigquery
-            dbt deps
-
-        - name: Create Big Query keyfile
-            run: 'scho $KEYFILE > ./.gcloud/dbt-service-account.json'
-            shell: bash
-            env:
-                KEYFILE: ${{ secrets.DBT_BIGQUERY_KEYFILE }}
-
-        # dbt related commands here - run use --target prod/dev to run for specific environments
-        {# - name: Run dbt models
-            run: dbt run #}
-
-        - name: Test dbt models
-            run: dbt test
+            - uses: actions/checkout@master
+            - uses: actions/setup-python@v1
+                with:
+                python-version: "3.11.x"
+            - run: |
+                pip3 install dbt-bigquery
+                dbt deps
+            - run: dbt --version
+            - run: 'echo "$KEYFILE" > ./.gcloud/dbt-service-account.json'
+                shell: bash
+                env:
+                KEYFILE: ${{secrets.DBT_BIGQUERY_KEYFILE}}
+            - run: dbt test
