@@ -47,7 +47,7 @@ models:
         tests:
           - unique
           - not_null
-      - name: source_customer_country_id_foo
+      - name: source_customer_country_id
         description: Source's foreign key for countries
         tests:
           - not_null
