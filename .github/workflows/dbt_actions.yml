@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - development
+      - main
 
 env:
   DBT_PROFILES_DIR: ./dbt_gh_profiles
