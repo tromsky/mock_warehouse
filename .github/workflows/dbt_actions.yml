@@ -1,7 +1,7 @@
 name: dbt_actions
 
 on:
-  pull_request:
+  push:
     branches:
       - development
       - '!main'
