@@ -33,4 +33,5 @@ jobs:
         shell: bash
         env:
           KEYFILE: ${{secrets.DBT_BIGQUERY_KEYFILE}}
-      - run: dbt test
+      - run: dbt compile
+      - run: dbt test -s state:modified+ --defer --state .

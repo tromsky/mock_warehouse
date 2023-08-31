@@ -23,7 +23,7 @@ FINAL AS (
         customers.source_customer_id,
         customers.customer_name,
         countries.source_country_id AS source_customer_country_id,
-        countries.country_name AS customer_country_name,
+        countries.country_name_bleh AS customer_country_name,
         countries.country_iso_code AS customer_country_iso_code
     FROM
         customers
