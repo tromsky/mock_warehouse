@@ -8,7 +8,7 @@
     // Use 'postCreateCommand' to run commands after the container is created.
     "postCreateCommand": "task deps",
     "remoteEnv": {
-        "DBT_PROFILES_DIR": "/codespaces/mock_warehouse/codespace_profiles"
+        "DBT_PROFILES_DIR": "/workspaces/mock_warehouse/codespace_profiles"
     },
     // Configure tool-specific properties
     "customizations": {
