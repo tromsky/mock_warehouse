@@ -1,0 +1,8 @@
+version: "3"
+
+tasks:
+  deps:
+    cmds:
+      - python -m pip install --progress-bar off dbt-bigquery
+      - echo "$DBT_BIGQUERY_KEYFILE_PAYLOAD" > "$DBT_BIGQUERY_KEYFILE"
+      - dbt --version

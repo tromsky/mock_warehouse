@@ -1,0 +1,44 @@
+{
+    "name": "Python 3",
+    "image": "mcr.microsoft.com/devcontainers/python:0-3.11-bullseye",
+    "features": {
+        "ghcr.io/devcontainers-contrib/features/black:1": {},
+        "ghcr.io/eitsupi/devcontainer-features/go-task:1": {}
+    },
+    // Use 'postCreateCommand' to run commands after the container is created.
+    "postCreateCommand": "task deps",
+    "remoteEnv": {
+        "DBT_PROFILES_DIR": "/workspaces/mock_warehouse/codespace_profiles"
+    },
+    // Configure tool-specific properties
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "zsh",
+                "files.associations": {
+                    "/workspaces/mock_warehouse/**/*.yaml": "jinja-yaml",
+                    "/workspaces/mock_warehouse/**/*.yml": "jinja-yaml",
+                    "/workspaces/mock_warehouse/**/*.sql": "jinja-sql",
+                    "/workspaces/mock_warehouse/**/docs/**/*.md": "jinja-md"
+                },
+                "editor.quickSuggestions": {
+                    "strings": true
+                },
+                "dbt.queryLimit": 500,
+                "[jinja-sql]": {
+                    "editor.defaultFormatter": "henriblancke.vscode-dbt-formatter",
+                    "editor.formatOnSave": true
+                }
+            },
+            "extensions": [
+                "esbenp.prettier-vscode",
+                "GitHub.codespaces",
+                "bastienboutonnet.vscode-dbt",
+                "innoverio.vscode-dbt-power-user",
+                "henriblancke.vscode-dbt-formatter"
+            ]
+        }
+    }
+}
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/python
