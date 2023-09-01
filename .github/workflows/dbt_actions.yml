@@ -1,0 +1,32 @@
+name: dbt_actions
+
+on:
+  pull_request:
+    branches:
+      - main
+      - '**'
+
+env:
+  DBT_PROFILES_DIR: ./dbt_gh_profiles
+  DBT_BIGQUERY_PROJECT: ${{ secrets.DBT_BIGQUERY_PROJECT }}
+  DBT_BIGQUERY_DATASET: ${{ secrets.DBT_BIGQUERY_DATASET }}
+  DBT_BIGQUERY_KEYFILE: ./.gcloud/dbt-service-account.json
+
+jobs:
+  dbt_actions:
+    name: dbt_actions
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11.x'
+      - run: pip install dbt-bigquery
+      - run: dbt --version
+      - run: 'echo "$KEYFILE" > ./.gcloud/dbt-service-account.json'
+        shell: bash
+        env:
+          KEYFILE: ${{secrets.DBT_BIGQUERY_KEYFILE}}
+      - run: dbt compile
+      - run: dbt test -s state:modified+ --defer --state .

@@ -47,11 +47,11 @@ models:
         tests:
           - unique
           - not_null
-      - name: source_country_id
+      - name: source_customer_country_id
         description: Source's foreign key for countries
         tests:
           - not_null
-      - name: name
+      - name: customer_name
         description: The customer's common name
   
   - name: stg_inventory_items
