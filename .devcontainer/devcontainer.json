@@ -1,11 +1,8 @@
 {
     "name": "Python 3",
-    "image": "mcr.microsoft.com/devcontainers/python:0-3.10-bullseye",
+    "image": "mcr.microsoft.com/devcontainers/python:0-3.11-bullseye",
     "features": {
         "ghcr.io/devcontainers-contrib/features/black:1": {},
-        "ghcr.io/devcontainers-contrib/features/meltano": {},
-        "ghcr.io/devcontainers/features/node:1": {},
-        "ghcr.io/eitsupi/devcontainer-features/duckdb-cli:1": {},
         "ghcr.io/eitsupi/devcontainer-features/go-task:1": {}
     },
     // Use 'postCreateCommand' to run commands after the container is created.
@@ -17,11 +14,28 @@
     "customizations": {
         "vscode": {
             "settings": {
-                "terminal.integrated.defaultProfile.linux": "zsh"
+                "terminal.integrated.defaultProfile.linux": "zsh",
+                "files.associations": {
+                    "/Users/tomross/projects/dbt/mock_warehouse/mock_warehouse/**/*.yaml": "jinja-yaml",
+                    "/Users/tomross/projects/dbt/mock_warehouse/mock_warehouse/**/*.yml": "jinja-yaml",
+                    "/Users/tomross/projects/dbt/mock_warehouse/mock_warehouse/**/*.sql": "jinja-sql",
+                    "/Users/tomross/projects/dbt/mock_warehouse/mock_warehouse/**/docs/**/*.md": "jinja-md"
+                },
+                "editor.quickSuggestions": {
+                    "strings": true
+                },
+                "dbt.queryLimit": 500,
+                "[jinja-sql]": {
+                    "editor.defaultFormatter": "henriblancke.vscode-dbt-formatter",
+                    "editor.formatOnSave": true
+                }
             },
             "extensions": [
                 "esbenp.prettier-vscode",
-                "GitHub.codespaces"
+                "GitHub.codespaces",
+                "bastienboutonnet.vscode-dbt",
+                "innoverio.vscode-dbt-power-user",
+                "henriblancke.vscode-dbt-formatter"
             ]
         }
     }
