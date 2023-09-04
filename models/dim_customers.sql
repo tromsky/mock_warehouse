@@ -7,6 +7,7 @@ WITH FINAL AS (
         CUSTOMER_COUNTRY_NAME,
         CUSTOMER_COUNTRY_ISO_CODE
     FROM
+
         {{ ref('stg_customers') }}
 )
 
