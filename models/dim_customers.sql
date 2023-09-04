@@ -1,15 +1,15 @@
 WITH FINAL AS (
     SELECT
-        customer_id,
-        source_customer_id,
-        customer_name,
-        source_customer_country_id,
-        customer_country_name,
-        customer_country_iso_code
+        CUSTOMER_ID,
+        SOURCE_CUSTOMER_ID,
+        CUSTOMER_NAME,
+        SOURCE_CUSTOMER_COUNTRY_ID,
+        CUSTOMER_COUNTRY_NAME,
+        CUSTOMER_COUNTRY_ISO_CODE
     FROM
         {{ ref('stg_customers') }}
 )
-SELECT
-    *
+
+SELECT *
 FROM
     FINAL
