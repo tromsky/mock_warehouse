@@ -1,9 +1,9 @@
 WITH inventory_items AS (
-    SELECT
-        *
+    SELECT *
     FROM
         {{ ref('stg_component_inventory_items') }}
 ),
+
 orders AS (
     SELECT
         order_id,
@@ -14,6 +14,7 @@ orders AS (
     FROM
         {{ ref('stg_orders') }}
 ),
+
 component_item_cogs AS (
     SELECT
         source_component_inventory_item_id,
@@ -25,23 +26,29 @@ component_item_cogs AS (
         1,
         2
 ),
-FINAL AS (
+
+final AS (
     SELECT
         inventory_items.inventory_item_id,
-        orders.price * inventory_items.sales_fraction AS sales,
         component_item_cogs.actual_cost AS cogs,
+        orders.price * inventory_items.sales_fraction AS sales,
         (
             orders.price * inventory_items.sales_fraction
         ) - component_item_cogs.actual_cost AS margin
     FROM
         inventory_items
-        JOIN orders
-        ON inventory_items.source_sellable_inventory_item_id = orders.source_inventory_id
-        JOIN component_item_cogs
-        ON inventory_items.source_component_inventory_item_id = component_item_cogs.source_component_inventory_item_id
-        AND inventory_items.source_sellable_inventory_item_id = component_item_cogs.source_component_inventory_item_id
+    INNER JOIN orders
+        ON
+            inventory_items.source_sellable_inventory_item_id
+            = orders.source_inventory_id
+    INNER JOIN component_item_cogs
+        ON
+            inventory_items.source_component_inventory_item_id
+            = component_item_cogs.source_component_inventory_item_id
+            AND inventory_items.source_sellable_inventory_item_id
+            = component_item_cogs.source_component_inventory_item_id
 )
-SELECT
-    *
+
+SELECT *
 FROM
-    FINAL
+    final

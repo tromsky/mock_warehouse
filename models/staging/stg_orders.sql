@@ -1,16 +1,16 @@
 WITH FINAL AS (
     SELECT
-        MD5(CAST(id AS STRING)) AS order_id,
-        id AS source_order_id,
-        inventory_id AS source_inventory_id,
-        customer_id AS source_customer_id,
-        price,
-        status,
-        order_date
+        ID AS SOURCE_ORDER_ID,
+        INVENTORY_ID AS SOURCE_INVENTORY_ID,
+        CUSTOMER_ID AS SOURCE_CUSTOMER_ID,
+        PRICE,
+        STATUS,
+        ORDER_DATE,
+        MD5(CAST(ID AS STRING)) AS ORDER_ID
     FROM
         {{ ref('orders') }}
 )
-SELECT
-    *
+
+SELECT *
 FROM
     FINAL

@@ -1,10 +1,9 @@
 WITH FINAL AS (
-    SELECT
-        *
+    SELECT *
     FROM
         {{ ref('stg_dates') }}
 )
-SELECT
-    *
+
+SELECT *
 FROM
     FINAL

@@ -1,25 +1,28 @@
 WITH sellable_inventory_items AS (
-    SELECT
-        *
+    SELECT *
     FROM
         {{ ref('stg_sellable_inventory_items') }}
 ),
+
 inventory_item_parent_child AS (
-    SELECT
-        *
+    SELECT *
     FROM
         {{ ref('inventory_parent_child') }}
 ),
+
 component_inventory_items AS (
     SELECT
-        MD5(CONCAT(CAST(id AS STRING))) AS component_inventory_item_id,
         id AS source_component_inventory_item_id,
-        code AS component_inventory_item_code
+        code AS component_inventory_item_code,
+        MD5(CONCAT(CAST(id AS STRING))) AS component_inventory_item_id
     FROM
         {{ ref('inventory') }}
 ),
-inventory_items AS (
+
+{# inventory_items AS (
     SELECT
+        sellable_inventory_items.sellable_inventory_item_id,
+        sellable_inventory_items.source_sellable_inventory_item_id,
         COALESCE(
             component_inventory_items.component_inventory_item_id,
             sellable_inventory_items.sellable_inventory_item_id
@@ -28,8 +31,6 @@ inventory_items AS (
             component_inventory_items.source_component_inventory_item_id,
             sellable_inventory_items.source_sellable_inventory_item_id
         ) AS source_component_inventory_item_id,
-        sellable_inventory_items.sellable_inventory_item_id,
-        sellable_inventory_items.source_sellable_inventory_item_id,
         COALESCE(
             component_inventory_items.component_inventory_item_code,
             sellable_inventory_items.sellable_inventory_item_code
@@ -46,13 +47,21 @@ inventory_items AS (
         ) AS sales_fraction
     FROM
         sellable_inventory_items
-        LEFT JOIN inventory_item_parent_child
-        ON sellable_inventory_items.source_sellable_inventory_item_id = inventory_item_parent_child.parent_id
-        LEFT JOIN component_inventory_items
-        ON inventory_item_parent_child.child_id = component_inventory_items.source_component_inventory_item_id
-),
-FINAL AS (
+    LEFT JOIN inventory_item_parent_child
+        ON
+            sellable_inventory_items.source_sellable_inventory_item_id
+            = inventory_item_parent_child.parent_id
+    LEFT JOIN component_inventory_items
+        ON
+            inventory_item_parent_child.child_id
+            = component_inventory_items.source_component_inventory_item_id
+), #}
+
+final AS (
     SELECT
+        sellable_inventory_item_id,
+        source_sellable_inventory_item_id,
+        sellable_inventory_item_type,
         MD5(
             CONCAT(
                 COALESCE(
@@ -70,28 +79,29 @@ FINAL AS (
             source_component_inventory_item_id,
             source_sellable_inventory_item_id
         ) AS source_component_inventory_item_id,
-        sellable_inventory_item_id,
-        source_sellable_inventory_item_id,
         COALESCE(
             component_inventory_item_code,
             sellable_inventory_item_code
         ) AS component_inventory_item_code,
-        sellable_inventory_item_type,
         COALESCE(
             sales_fraction,
             1
         ) AS sales_fraction
     FROM
         sellable_inventory_items
-        LEFT JOIN inventory_item_parent_child
-        ON sellable_inventory_items.source_sellable_inventory_item_id = inventory_item_parent_child.parent_id
-        LEFT JOIN component_inventory_items
-        ON inventory_item_parent_child.child_id = component_inventory_items.source_component_inventory_item_id
+    LEFT JOIN inventory_item_parent_child
+        ON
+            sellable_inventory_items.source_sellable_inventory_item_id
+            = inventory_item_parent_child.parent_id
+    LEFT JOIN component_inventory_items
+        ON
+            inventory_item_parent_child.child_id
+            = component_inventory_items.source_component_inventory_item_id
 )
-SELECT
-    *
+
+SELECT *
 FROM
-    FINAL
+    final
 GROUP BY
     1,
     2,

@@ -1,173 +1,186 @@
 WITH FINAL AS (
     SELECT
+        D AS FULL_DATE,
         MD5(
-            format_date(
+            FORMAT_DATE(
                 '%F',
-                d
+                D
             )
-        ) AS date_id,
-        d AS full_date,
+        ) AS DATE_ID,
         EXTRACT(
             YEAR
             FROM
-                d
+            D
         ) AS YEAR,
         EXTRACT(
-            week
+            WEEK
             FROM
-                d
-        ) AS year_week,
+            D
+        ) AS YEAR_WEEK,
         EXTRACT(
-            dayofyear
+            DAYOFYEAR
             FROM
-                d
-        ) AS year_day,
+            D
+        ) AS YEAR_DAY,
         EXTRACT(
             DAY
             FROM
-                d
-        ) AS month_day,
+            D
+        ) AS MONTH_DAY,
         CASE
-            WHEN EXTRACT(
-                MONTH
-                FROM
-                    d
-            ) > 7 THEN (
+            WHEN
                 EXTRACT(
-                    YEAR
+                    MONTH
                     FROM
-                        d
-                ) + 1
-            )
+                    D
+                ) > 7
+                THEN (
+                    EXTRACT(
+                        YEAR
+                        FROM
+                        D
+                    ) + 1
+                )
             ELSE EXTRACT(
                 YEAR
                 FROM
-                    d
+                D
             )
-        END AS fiscal_year,
+        END AS FISCAL_YEAR,
         CASE
-            WHEN EXTRACT(
-                MONTH
-                FROM
-                    d
-            ) > 7 THEN EXTRACT(
-                MONTH
-                FROM
-                    d
-            ) - 7
+            WHEN
+                EXTRACT(
+                    MONTH
+                    FROM
+                    D
+                ) > 7
+                THEN EXTRACT(
+                    MONTH
+                    FROM
+                    D
+                ) - 7
             ELSE EXTRACT(
                 MONTH
                 FROM
-                    d
+                D
             ) + 5
-        END AS fiscal_period,
+        END AS FISCAL_PERIOD,
         CASE
-            WHEN EXTRACT(
-                MONTH
-                FROM
-                    d
-            ) > 7
-            AND EXTRACT(
-                MONTH
-                FROM
-                    d
-            ) < 11 THEN (
-                1
-            )
-            WHEN EXTRACT(
-                MONTH
-                FROM
-                    d
-            ) > 10
-            AND EXTRACT(
-                MONTH
-                FROM
-                    d
-            ) < 13 THEN (
-                2
-            )
-            WHEN EXTRACT(
-                MONTH
-                FROM
-                    d
-            ) > 0
-            AND EXTRACT(
-                MONTH
-                FROM
-                    d
-            ) < 2 THEN (
-                2
-            )
-            WHEN EXTRACT(
-                MONTH
-                FROM
-                    d
-            ) > 1
-            AND EXTRACT(
-                MONTH
-                FROM
-                    d
-            ) < 5 THEN (
-                3
-            )
-            WHEN EXTRACT(
-                MONTH
-                FROM
-                    d
-            ) > 4
-            AND EXTRACT(
-                MONTH
-                FROM
-                    d
-            ) < 8 THEN (
-                4
-            )
+            WHEN
+                EXTRACT(
+                    MONTH
+                    FROM
+                    D
+                ) > 7
+                AND EXTRACT(
+                    MONTH
+                    FROM
+                    D
+                ) < 11
+                THEN (
+                    1
+                )
+            WHEN
+                EXTRACT(
+                    MONTH
+                    FROM
+                    D
+                ) > 10
+                AND EXTRACT(
+                    MONTH
+                    FROM
+                    D
+                ) < 13
+                THEN (
+                    2
+                )
+            WHEN
+                EXTRACT(
+                    MONTH
+                    FROM
+                    D
+                ) > 0
+                AND EXTRACT(
+                    MONTH
+                    FROM
+                    D
+                ) < 2
+                THEN (
+                    2
+                )
+            WHEN
+                EXTRACT(
+                    MONTH
+                    FROM
+                    D
+                ) > 1
+                AND EXTRACT(
+                    MONTH
+                    FROM
+                    D
+                ) < 5
+                THEN (
+                    3
+                )
+            WHEN
+                EXTRACT(
+                    MONTH
+                    FROM
+                    D
+                ) > 4
+                AND EXTRACT(
+                    MONTH
+                    FROM
+                    D
+                ) < 8
+                THEN (
+                    4
+                )
             ELSE 0
-        END AS fiscal_qtr,
+        END AS FISCAL_QTR,
         EXTRACT(
             MONTH
             FROM
-                d
+            D
         ) AS MONTH,
-        format_date(
+        FORMAT_DATE(
             '%B',
-            d
-        ) AS month_name,
-        format_date(
+            D
+        ) AS MONTH_NAME,
+        FORMAT_DATE(
             '%w',
-            d
-        ) AS week_day,
-        format_date(
+            D
+        ) AS WEEK_DAY,
+        FORMAT_DATE(
             '%A',
-            d
-        ) AS day_name,
+            D
+        ) AS DAY_NAME,
         (
             CASE
-                WHEN format_date(
+                WHEN FORMAT_DATE(
                     '%A',
-                    d
+                    D
                 ) IN (
                     'Sunday',
                     'Saturday'
                 ) THEN 0
                 ELSE 1
             END
-        ) AS day_is_weekday,
+        ) AS DAY_IS_WEEKDAY
     FROM
         (
-            SELECT
-                *
+            SELECT *
             FROM
-                unnest(
-                    generate_date_array(
+                UNNEST(
+                    GENERATE_DATE_ARRAY(
                         '2008-01-01',
                         '2050-01-01',
                         INTERVAL 1 DAY
                     )
-                ) AS d
+                ) AS D
         )
 )
-SELECT
-    *
+
+SELECT *
 FROM
     FINAL

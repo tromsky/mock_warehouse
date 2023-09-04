@@ -1,19 +1,19 @@
 WITH FINAL AS (
     SELECT
+        SOURCE_COMPONENT_INVENTORY_ITEM_ID,
+        COMPONENT_INVENTORY_ITEM_CODE,
+        SELLABLE_INVENTORY_ITEM_TYPE,
+        SALES_FRACTION,
         MD5(
             CONCAT(
-                component_inventory_item_id,
-                sellable_inventory_item_id
+                COMPONENT_INVENTORY_ITEM_ID,
+                SELLABLE_INVENTORY_ITEM_ID
             )
-        ) AS inventory_item_id,
-        source_component_inventory_item_id,
-        component_inventory_item_code,
-        sellable_inventory_item_type,
-        sales_fraction
+        ) AS INVENTORY_ITEM_ID
     FROM
         {{ ref('stg_component_inventory_items') }}
 )
-SELECT
-    *
+
+SELECT *
 FROM
     FINAL
