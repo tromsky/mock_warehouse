@@ -5,6 +5,7 @@ WITH customers AS (
     FROM
         {{ ref('stg_customers') }}
 ),
+
 orders AS (
     SELECT
         order_id,
@@ -16,6 +17,7 @@ orders AS (
     FROM
         {{ ref('stg_orders') }}
 ),
+
 inventory_items AS (
     SELECT
         inventory_item_id,
@@ -28,6 +30,7 @@ inventory_items AS (
     FROM
         {{ ref('stg_component_inventory_items') }}
 ),
+
 dates AS (
     SELECT
         date_id,
@@ -35,23 +38,26 @@ dates AS (
     FROM
         {{ ref('stg_dates') }}
 ),
-FINAL AS (
+
+final AS (
     SELECT
-        customer_id,
-        order_id AS order_id_dd,
-        inventory_item_id,
-        date_id,
-        price * sales_fraction AS price
+        customers.customer_id,
+        orders.order_id AS order_id_dd,
+        inventory_items.inventory_item_id,
+        dates.date_id,
+        orders.price * inventory_items.sales_fraction AS price
     FROM
         customers
-        JOIN orders
+    INNER JOIN orders
         ON customers.source_customer_id = orders.source_customer_id
-        JOIN inventory_items
-        ON orders.source_inventory_id = inventory_items.source_sellable_inventory_item_id
-        JOIN dates
-        ON dates.full_date = orders.order_date
+    INNER JOIN inventory_items
+        ON
+            orders.source_inventory_id
+            = inventory_items.source_sellable_inventory_item_id
+    INNER JOIN dates
+        ON orders.order_date = dates.full_date
 )
-SELECT
-    *
+
+SELECT *
 FROM
-    FINAL
+    final

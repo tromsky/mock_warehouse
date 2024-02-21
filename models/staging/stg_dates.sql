@@ -1,149 +1,163 @@
-WITH FINAL AS (
+WITH final AS (
     SELECT
+        d AS full_date,
         MD5(
-            format_date(
+            FORMAT_DATE(
                 '%F',
                 d
             )
         ) AS date_id,
-        d AS full_date,
         EXTRACT(
             YEAR
             FROM
-                d
-        ) AS YEAR,
+            d
+        ) AS year,
         EXTRACT(
-            week
+            WEEK
             FROM
-                d
+            d
         ) AS year_week,
         EXTRACT(
-            dayofyear
+            DAYOFYEAR
             FROM
-                d
+            d
         ) AS year_day,
         EXTRACT(
             DAY
             FROM
-                d
+            d
         ) AS month_day,
         CASE
-            WHEN EXTRACT(
-                MONTH
-                FROM
-                    d
-            ) > 7 THEN (
+            WHEN
                 EXTRACT(
-                    YEAR
+                    MONTH
                     FROM
+                    d
+                ) > 7
+                THEN (
+                    EXTRACT(
+                        YEAR
+                        FROM
                         d
-                ) + 1
-            )
+                    ) + 1
+                )
             ELSE EXTRACT(
                 YEAR
                 FROM
-                    d
+                d
             )
         END AS fiscal_year,
         CASE
-            WHEN EXTRACT(
-                MONTH
-                FROM
+            WHEN
+                EXTRACT(
+                    MONTH
+                    FROM
                     d
-            ) > 7 THEN EXTRACT(
-                MONTH
-                FROM
+                ) > 7
+                THEN EXTRACT(
+                    MONTH
+                    FROM
                     d
-            ) - 7
+                ) - 7
             ELSE EXTRACT(
                 MONTH
                 FROM
-                    d
+                d
             ) + 5
         END AS fiscal_period,
         CASE
-            WHEN EXTRACT(
-                MONTH
-                FROM
+            WHEN
+                EXTRACT(
+                    MONTH
+                    FROM
                     d
-            ) > 7
-            AND EXTRACT(
-                MONTH
-                FROM
+                ) > 7
+                AND EXTRACT(
+                    MONTH
+                    FROM
                     d
-            ) < 11 THEN (
-                1
-            )
-            WHEN EXTRACT(
-                MONTH
-                FROM
+                ) < 11
+                THEN (
+                    1
+                )
+            WHEN
+                EXTRACT(
+                    MONTH
+                    FROM
                     d
-            ) > 10
-            AND EXTRACT(
-                MONTH
-                FROM
+                ) > 10
+                AND EXTRACT(
+                    MONTH
+                    FROM
                     d
-            ) < 13 THEN (
-                2
-            )
-            WHEN EXTRACT(
-                MONTH
-                FROM
+                ) < 13
+                THEN (
+                    2
+                )
+            WHEN
+                EXTRACT(
+                    MONTH
+                    FROM
                     d
-            ) > 0
-            AND EXTRACT(
-                MONTH
-                FROM
+                ) > 0
+                AND EXTRACT(
+                    MONTH
+                    FROM
                     d
-            ) < 2 THEN (
-                2
-            )
-            WHEN EXTRACT(
-                MONTH
-                FROM
+                ) < 2
+                THEN (
+                    2
+                )
+            WHEN
+                EXTRACT(
+                    MONTH
+                    FROM
                     d
-            ) > 1
-            AND EXTRACT(
-                MONTH
-                FROM
+                ) > 1
+                AND EXTRACT(
+                    MONTH
+                    FROM
                     d
-            ) < 5 THEN (
-                3
-            )
-            WHEN EXTRACT(
-                MONTH
-                FROM
+                ) < 5
+                THEN (
+                    3
+                )
+            WHEN
+                EXTRACT(
+                    MONTH
+                    FROM
                     d
-            ) > 4
-            AND EXTRACT(
-                MONTH
-                FROM
+                ) > 4
+                AND EXTRACT(
+                    MONTH
+                    FROM
                     d
-            ) < 8 THEN (
-                4
-            )
+                ) < 8
+                THEN (
+                    4
+                )
             ELSE 0
         END AS fiscal_qtr,
         EXTRACT(
             MONTH
             FROM
-                d
-        ) AS MONTH,
-        format_date(
+            d
+        ) AS month,
+        FORMAT_DATE(
             '%B',
             d
         ) AS month_name,
-        format_date(
+        FORMAT_DATE(
             '%w',
             d
         ) AS week_day,
-        format_date(
+        FORMAT_DATE(
             '%A',
             d
         ) AS day_name,
         (
             CASE
-                WHEN format_date(
+                WHEN FORMAT_DATE(
                     '%A',
                     d
                 ) IN (
@@ -152,14 +166,13 @@ WITH FINAL AS (
                 ) THEN 0
                 ELSE 1
             END
-        ) AS day_is_weekday,
+        ) AS day_is_weekday
     FROM
         (
-            SELECT
-                *
+            SELECT *
             FROM
-                unnest(
-                    generate_date_array(
+                UNNEST(
+                    GENERATE_DATE_ARRAY(
                         '2008-01-01',
                         '2050-01-01',
                         INTERVAL 1 DAY
@@ -167,7 +180,7 @@ WITH FINAL AS (
                 ) AS d
         )
 )
-SELECT
-    *
+
+SELECT *
 FROM
-    FINAL
+    final

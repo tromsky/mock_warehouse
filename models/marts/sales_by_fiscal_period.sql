@@ -1,14 +1,15 @@
-WITH FINAL AS (
+WITH final AS (
     SELECT
         dates.fiscal_period,
         dates.fiscal_qtr,
         dates.fiscal_year,
-        SUM(price) AS sales
+        SUM(sales.price) AS sales
     FROM
         {{ ref('fct_sales') }}
-        sales
-        JOIN {{ ref('dim_dates') }}
-        dates
+            AS sales
+    INNER JOIN
+        {{ ref('dim_dates') }}
+            AS dates
         ON sales.date_id = dates.date_id
     GROUP BY
         1,
@@ -19,7 +20,7 @@ WITH FINAL AS (
         2,
         3
 )
-SELECT
-    *
+
+SELECT *
 FROM
-    FINAL
+    final

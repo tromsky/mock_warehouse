@@ -1,4 +1,4 @@
-WITH FINAL AS (
+WITH final AS (
     SELECT
         order_id,
         source_order_id,
@@ -6,7 +6,7 @@ WITH FINAL AS (
     FROM
         {{ ref('stg_orders') }}
 )
-SELECT
-    *
+
+SELECT *
 FROM
-    FINAL
+    final

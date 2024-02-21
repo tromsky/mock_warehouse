@@ -1,17 +1,18 @@
-with inventory_items as (
+WITH inventory_items AS (
 
-    select * from {{ ref('stg_inventory_items') }}
-
-),
-orders as (
-
-    select * from {{ ref('stg_orders') }}
+    SELECT * FROM {{ ref('stg_inventory_items') }}
 
 ),
-final as (
 
-    select 
-        md5(concat(inventory_item_id, order_id)) as inventory_item_order_id,
+orders AS (
+
+    SELECT * FROM {{ ref('stg_orders') }}
+
+),
+
+final AS (
+
+    SELECT
         inventory_items.inventory_item_id,
         orders.order_id,
         orders.source_order_id,
@@ -19,11 +20,15 @@ final as (
         inventory_items.source_inventory_child_id,
         inventory_items.inventory_parent_code,
         inventory_items.inventory_child_code,
-        inventory_items.sales_fraction * orders.price as distributed_price
-    from inventory_items
-    join orders
-        on inventory_items.source_inventory_parent_id = orders.source_inventory_id
+        md5(concat(inventory_items.inventory_item_id, orders.order_id))
+            AS inventory_item_order_id,
+        inventory_items.sales_fraction * orders.price AS distributed_price
+    FROM inventory_items
+    INNER JOIN orders
+        ON
+            inventory_items.source_inventory_parent_id
+            = orders.source_inventory_id
 
 )
 
-select * from final
+SELECT * FROM final
